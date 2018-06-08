@@ -7,15 +7,16 @@ Deploy Trellis, Bedrock and Sage via CircleCI.
 
 
 - [Requirements](#requirements)
-- [What's in the box?](#whats-in-the-box)
-  - [File Structures](#file-structures)
-    - [Official](#official)
-    - [Typist Tech](#typist-tech)
+- [What's in the Box?](#whats-in-the-box)
+- [File Structures](#file-structures)
+  - [Official](#official)
+  - [Typist Tech](#typist-tech)
 - [SSH Key](#ssh-key)
   - [GitHub](#github)
   - [CircleCI](#circleci)
   - [Trellis](#trellis)
-- [Ensure Trellis deploys the correct commit](#ensure-trellis-deploys-the-correct-commit)
+- [Ensure Trellis Deploys the Correct Commit](#ensure-trellis-deploys-the-correct-commit)
+- [Ansible Vault Password](#ansible-vault-password)
 - [FAQ](#faq)
   - [Is it a must to merge Trellis pull request #997?](#is-it-a-must-to-merge-trellis-pull-request-997)
   - [What is in the `itinerisltd/tiller` docker image?](#what-is-in-the-itinerisltdtiller-docker-image)
@@ -40,15 +41,15 @@ Deploy Trellis, Bedrock and Sage via CircleCI.
 - (Optional) Bedrock [31c638f](https://github.com/roots/bedrock/commit/31c638fe5a33d9e40a5c9eee07a94deb9cb76adc) or later
 - (Optional) Sage [9.0.1](https://github.com/roots/sage/releases/tag/9.0.1) or later
 
-## What's in the box?
+## What's in the Box?
 
 `.circleci/config.yml` examples of running [Trellis deploys](https://roots.io/trellis/docs/deploys/) to production whenever master branch is pushed.
 
-### File Structures
+## File Structures
 
 Tiller comes with 2 different `config.yml` examples. They are expecting different Trellis and Bedrock structures.
 
-#### Official
+### Official
 
 Use [`config.yml`](./config.yml) if your directory structure follow [the official documents](https://roots.io/trellis/docs/installing-trellis/#create-a-project):
 ```
@@ -59,10 +60,10 @@ example.com/      # → Root folder for the project
 ```
 
 To install `config.yml`:
-1. Set up SSH keys and commit Trellis changes described in the following sections
+1. Set up SSH keys, Ansible Vault password and commit Trellis changes described in the following sections
 1. Copy, review, change and commit [`config.yml`](./config.yml) to `.circleci/config.yml`
 
-#### Typist Tech
+### Typist Tech
 
 At [Typist Tech](https://typist.tech/), I use a opinionated project structure:
 - separate Trellis and Bedrock as 2 different git repo
@@ -79,7 +80,7 @@ example.com/      # → Root folder for the project
 See: [roots/trellis#883 (comment)](https://github.com/roots/trellis/issues/883#issuecomment-329052189)
 
 To install `config.typisttech.yml`:
-1. Set up SSH keys and commit Trellis changes described in the following sections
+1. Set up SSH keys, Ansible Vault password and commit Trellis changes described in the following sections
 1. Push the Trellis repo
 1. Copy, review, change and commit [`config.typisttech.yml`](./config.typisttech.yml) to `<bedrock>/.circleci/config.yml`
 
@@ -125,7 +126,7 @@ Learn more about deploy keys and user keys on CircleCI **Checkout SSH Keys** set
 1. Re-provision
     `$ ansible-playbook server.yml -e env=<env> --tags users`
 
-## Ensure Trellis deploys the correct commit
+## Ensure Trellis Deploys the Correct Commit
 
 Normally, Trellis always deploy the **latest** commit of the branch. We need a change in `group_vars/<env>/wordpress_sites.yml`:
 
@@ -135,6 +136,36 @@ wordpress_sites:
   example.com:
 -    branch: master
 +    branch: "{{ site_version | default('master') }}"
+```
+
+## Ansible Vault Password
+
+Unlike other environment variables, [Ansible Vault](https://docs.ansible.com/ansible/playbooks_vault.html) password should never be stored as plaintext. Therefore, you should add `VAULT_PASS` via [CircleCI web console](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project) instead of commit it to `.circleci/config.yml`.
+
+The examples assume you have defined `vault_password_file = .vault_pass` in `ansible.cfg` as [the official document](https://roots.io/trellis/docs/vault/#2-inform-ansible-of-vault-password) suggested.
+
+```diff
+# ansible.cfg
+[defaults]
++ vault_password_file = .vault_pass
+```
+
+To use another vault password filename:
+```diff
+- run:
+    name: Set Ansible Vault Pass
+-    command: echo $VAULT_PASS > .vault_pass
++    command: echo $VAULT_PASS > .my_vault_password_file
+    working_directory: trellis
+``
+
+Using [Ansible Vault](https://docs.ansible.com/ansible/playbooks_vault.html) to encrypt sensitive data is strongly recommended. In case you have a very strong reason not to use Ansible Vault, remove the step:
+
+```diff
+-- run:
+-    name: Set Ansible Vault Pass
+-    command: echo $VAULT_PASS > .vault_pass
+-    working_directory: trellis
 ```
 
 ## FAQ
