@@ -264,7 +264,7 @@ Yes and no.
 It is required for compiling Sage assets.
 If you don't use Sage:
 - you can omit pull request [#997](https://github.com/roots/trellis/pull/997)
-- but you have to checkout bedrock source code by yourself
+- you **might** have to checkout bedrock source code by yourself
 
 ### What is in the `itinerisltd/tiller` docker image?
 
