@@ -168,6 +168,54 @@ Using [Ansible Vault](https://docs.ansible.com/ansible/playbooks_vault.html) to 
 -    working_directory: trellis
 ```
 
+## Caching
+
+By default, yarn packages, Ansible Galaxy roles and [Trellis' temporary build directory](https://github.com/roots/trellis/pull/997) are cached. It speeds up the build significantly.
+This is optional and you can [customize the cache behaviour](https://circleci.com/docs/2.0/caching/).
+
+### Ansible Galaxy Roles
+
+Due to the way `$ ansible-galaxy install` works, you can't cache `trellis/vendor` when installing a role from its git/hg repo branch:
+```yaml
+# Good: Install from Ansible Galaxy
+- src: TypistTech.trellis-cloudflare-origin-ca
+  version: 0.6.0
+
+# Good: Install from Ansible Galaxy
+# Defaults to latest tag when no version specified
+- src: TypistTech.trellis-cloudflare-origin-ca
+
+# Good: Not install from version control
+- src: TypistTech.trellis-cloudflare-origin-ca
+  version: 0.6.0
+
+# Good: Tag name is *linked* to a specific commit hash
+- src: https://github.com/TypistTech/trellis-cloudflare-origin-ca
+  version: 0.6.0
+
+# Good: Commit hash
+- src: https://github.com/TypistTech/trellis-cloudflare-origin-ca
+  version: 58785793908f67480cae3729ec5900739e0d5c66
+
+# Bad: Branch name
+- src: https://github.com/TypistTech/trellis-cloudflare-origin-ca
+  version: master
+
+# Bad: Defaults to `master` branch when no version specified
+- src: https://github.com/TypistTech/trellis-cloudflare-origin-ca
+```
+
+If you must install a role from its git/hg repo branch:
+```diff
+-- restore_cache:
+-    key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+ # ...
+-- save_cache:
+-    key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+-    paths:
+-     - trellis/vendor
+```
+
 ## FAQ
 
 ### Is it a must to merge Trellis pull request [#997](https://github.com/roots/trellis/pull/997)?
@@ -193,11 +241,6 @@ No. The original [Tiller](https://github.com/ItinerisLtd/tiller) project uses AW
 ### Is it a must to use GitHub?
 
 No. GitHub is just an example.
-
-### What does it cache?
-
-By default, yarn packages, Ansible Galaxy roles and [Trellis' temporary build directory](https://github.com/roots/trellis/pull/997) are cached. It speeds up the build significantly.
-This is optional and you can [customize the cache behaviour](https://circleci.com/docs/2.0/caching/).
 
 ### It looks awesome. Where can I find some more goodies like this?
 
