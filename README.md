@@ -17,13 +17,18 @@ Deploy Trellis, Bedrock and Sage via CircleCI.
   - [Trellis](#trellis)
 - [Ensure Trellis Deploys the Correct Commit](#ensure-trellis-deploys-the-correct-commit)
 - [Ansible Vault Password](#ansible-vault-password)
+- [Caching](#caching)
+  - [Ansible Galaxy Roles](#ansible-galaxy-roles)
+- [Security](#security)
+  - [SSH Keys](#ssh-keys)
+  - [Log Level](#log-level)
+  - [Every Software can be Hacked](#every-software-can-be-hacked)
 - [FAQ](#faq)
   - [Is it a must to merge Trellis pull request #997?](#is-it-a-must-to-merge-trellis-pull-request-997)
   - [What is in the `itinerisltd/tiller` docker image?](#what-is-in-the-itinerisltdtiller-docker-image)
   - [Is it a must to use all Trellis, Bedrock and Sage?](#is-it-a-must-to-use-all-trellis-bedrock-and-sage)
   - [Is it a must to use CircleCI?](#is-it-a-must-to-use-circleci)
   - [Is it a must to use GitHub?](#is-it-a-must-to-use-github)
-  - [What does it cache?](#what-does-it-cache)
   - [It looks awesome. Where can I find some more goodies like this?](#it-looks-awesome-where-can-i-find-some-more-goodies-like-this)
   - [This package isn't on wp.org. Where can I give a :star::star::star::star::star: review?](#this-package-isnt-on-wporg-where-can-i-give-a-starstarstarstarstar-review)
 - [Support](#support)
@@ -215,6 +220,40 @@ If you must install a role from its git/hg repo branch:
 -    paths:
 -     - trellis/vendor
 ```
+
+## Security
+
+### SSH Keys
+
+- Grant the machine user **read** access to necessary private repo only
+- **Do not** grant the machine user any **write** or **admin** access to any repo
+- Add the machine user key to [`web_user`](https://roots.io/trellis/docs/ssh-keys/) only
+- **Do not** add the machine user key to [`admin_user`](https://roots.io/trellis/docs/ssh-keys/)
+
+### Log Level
+
+> Note that the use of the no_log attribute does not prevent data from being shown when debugging Ansible itself via the ANSIBLE_DEBUG environment variable.
+>
+> --- [Ansible Docs](http://docs.ansible.com/ansible/latest/faq.html#how-do-i-keep-secret-data-in-my-playbook)
+
+By default, verbose level is set to maximum. [Sensitive data might be logged](https://github.com/TypistTech/trellis-cloudflare-origin-ca#why-cloudflare-origin-ca-key-is-logged-even-cloudflare_origin_ca_no_log-is-true).
+
+To disable verbose mode:
+```diff
+ - run:
+     name: Install Ansible Galaxy Roles
+-    command: ansible-galaxy install -r requirements.yml -vvvv
++    command: ansible-galaxy install -r requirements.yml
+    working_directory: trellis
+ - deploy:
+-    command: ansible-playbook deploy.yml -e env=$SITE_ENV -e site=$SITE_KEY -e site_version=$CIRCLE_SHA1 -vvvv
++    command: ansible-playbook deploy.yml -e env=$SITE_ENV -e site=$SITE_KEY -e site_version=$CIRCLE_SHA1
+     working_directory: trellis
+```
+
+### Every Software can be Hacked
+
+If you discover any security related issues, please email [tiller-circleci@typist.tech](mailto:tiller-circleci@typist.tech) instead of using the issue tracker.
 
 ## FAQ
 
