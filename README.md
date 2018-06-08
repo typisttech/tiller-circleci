@@ -193,8 +193,8 @@ No. GitHub is just an example.
 
 ### What does it cache?
 
-By default, yarn packages and [Trellis' temporary build directory](https://github.com/roots/trellis/pull/997) are cached. It speeds up the build significantly.
-This is optional and you can [cache more paths](https://circleci.com/docs/2.0/caching/).
+By default, yarn packages, Ansible Galaxy roles and [Trellis' temporary build directory](https://github.com/roots/trellis/pull/997) are cached. It speeds up the build significantly.
+This is optional and you can [customize the cache behaviour](https://circleci.com/docs/2.0/caching/).
 
 ### It looks awesome. Where can I find some more goodies like this?
 
