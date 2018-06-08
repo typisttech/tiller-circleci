@@ -25,7 +25,7 @@ jobs:
           working_directory: trellis
       - run:
           name: Install Ansible Galaxy Roles
-          command: ansible-galaxy install -r requirements.yml
+          command: ansible-galaxy install -r requirements.yml -vvvv
           working_directory: trellis
       - deploy:
           command: ansible-playbook deploy.yml -e env=$SITE_ENV -e site=$SITE_KEY -e site_version=$CIRCLE_SHA1 -vvvv
