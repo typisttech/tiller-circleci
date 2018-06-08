@@ -109,19 +109,19 @@ Learn more about deploy keys and user keys on CircleCI **Checkout SSH Keys** set
 
 1. Add the SSH key to web server
     ```diff
-    # group_vars/<env>/users.yml
-    users:
-      - name: "{{ web_user }}"
-        groups:
-          - "{{ web_group }}"
-        keys:
-          - https://github.com/human.keys
+     # group_vars/<env>/users.yml
+     users:
+       - name: "{{ web_user }}"
+         groups:
+           - "{{ web_group }}"
+         keys:
+           - https://github.com/human.keys
     +      - https://github.com/mybot.keys
-      - name: "{{ admin_user }}"
-        groups:
-          - sudo
-        keys:
-          - https://github.com/human.keys
+       - name: "{{ admin_user }}"
+         groups:
+           - sudo
+         keys:
+           - https://github.com/human.keys
     ```
 1. Re-provision
     `$ ansible-playbook server.yml -e env=<env> --tags users`
@@ -131,9 +131,9 @@ Learn more about deploy keys and user keys on CircleCI **Checkout SSH Keys** set
 Normally, Trellis always deploy the **latest** commit of the branch. We need a change in `group_vars/<env>/wordpress_sites.yml`:
 
 ```diff
-# group_vars/<env>/wordpress_sites.yml
-wordpress_sites:
-  example.com:
+ # group_vars/<env>/wordpress_sites.yml
+ wordpress_sites:
+   example.com:
 -    branch: master
 +    branch: "{{ site_version | default('master') }}"
 ```
@@ -145,18 +145,18 @@ Unlike other environment variables, [Ansible Vault](https://docs.ansible.com/ans
 The examples assume you have defined `vault_password_file = .vault_pass` in `ansible.cfg` as [the official document](https://roots.io/trellis/docs/vault/#2-inform-ansible-of-vault-password) suggested.
 
 ```diff
-# ansible.cfg
-[defaults]
-+ vault_password_file = .vault_pass
+ # ansible.cfg
+ [defaults]
++vault_password_file = .vault_pass
 ```
 
 To use another vault password filename:
 ```diff
-- run:
-    name: Set Ansible Vault Pass
--    command: echo $VAULT_PASS > .vault_pass
-+    command: echo $VAULT_PASS > .my_vault_password_file
-    working_directory: trellis
+ - run:
+     name: Set Ansible Vault Pass
+-     command: echo $VAULT_PASS > .vault_pass
++     command: echo $VAULT_PASS > .my_vault_password_file
+     working_directory: trellis
 ```
 
 Using [Ansible Vault](https://docs.ansible.com/ansible/playbooks_vault.html) to encrypt sensitive data is strongly recommended. In case you have a very strong reason not to use Ansible Vault, remove the step:
