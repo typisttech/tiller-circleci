@@ -1,4 +1,4 @@
-# tiller-circleci
+# Tiller CircleCI
 
 Deploy Trellis, Bedrock and Sage via CircleCI.
 
@@ -52,7 +52,7 @@ Deploy Trellis, Bedrock and Sage via CircleCI.
 
 ## File Structures
 
-Tiller comes with 2 different `config.yml` examples. They are expecting different Trellis and Bedrock structures.
+[Tiller CircleCI](https://github.com/TypistTech/tiller-circleci) comes with 2 different `config.yml` examples. They are expecting different Trellis and Bedrock structures.
 
 ### Official
 
@@ -298,7 +298,7 @@ Consider writing a blog post, submitting pull requests, [donating](https://typis
 
 ## Support
 
-Love `tiller-circleci`? Help me maintain it, a [donation here](https://typist.tech/donation/) can help with it.
+Love [Tiller CircleCI](https://github.com/TypistTech/tiller-circleci)? Help me maintain it, a [donation here](https://typist.tech/donation/) can help with it.
 
 ### Why don't you hire me?
 
@@ -310,7 +310,7 @@ Contact: [Tang Rufus](mailto:tangrufus@gmail.com)
 
 ## Author Information
 
-[tiller-circleci](https://github.com/typisttech/tiller-circleci) is a [Typist Tech](https://typist.tech/) project created by [Tang Rufus](https://typist.tech).
+[Tiller CircleCI](https://github.com/TypistTech/tiller-circleci) is a [Typist Tech](https://typist.tech/) project created by [Tang Rufus](https://typist.tech).
 
 Special thanks to [Itineris Limited](https://www.itineris.co.uk/) who hired me to create the original [Tiller](https://github.com/ItinerisLtd/tiller) project.
 
