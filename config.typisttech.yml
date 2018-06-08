@@ -1,0 +1,56 @@
+# See: https://github.com/TypistTech/tiller-circleci
+---
+version: 2
+jobs:
+  deploy-production:
+    docker:
+      - image: itinerisltd/tiller:latest
+    environment:
+      ANSIBLE_HOST_KEY_CHECKING: false
+      # TODO: Customize these environment variables
+      SITE_ENV: production
+      SITE_KEY: example.com
+      TRELLIS_BRANCH: master
+      TRELLIS_REPO: git@github.com:XXX/YYY.git
+    steps:
+      - deploy:
+          name: Clone Trellis Repo
+          command: git clone --verbose --branch $TRELLIS_BRANCH --depth 1 $TRELLIS_REPO .
+          working_directory: trellis
+      - restore_cache:
+          key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+      - restore_cache:
+          keys:
+            - v1-production-{{ .Branch }}-{{ .Revision }}-
+            - v1-production-{{ .Branch }}-
+            - v1-production-
+      - run:
+          name: Set Ansible Vault Pass
+          command: echo $VAULT_PASS > .vault_pass
+          working_directory: trellis
+      - run:
+          name: Install Ansible Galaxy Roles
+          command: ansible-galaxy install -r requirements.yml
+          working_directory: trellis
+      - deploy:
+          command: ansible-playbook deploy.yml -e env=$SITE_ENV -e site=$SITE_KEY -e site_version=$CIRCLE_SHA1 -vvvv
+          working_directory: trellis
+      - save_cache:
+          key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+          paths:
+            - trellis/vendor
+      - save_cache:
+          key: v1-production-{{ .Branch }}-{{ .Revision }}-{{ epoch }}
+          paths:
+            - /tmp/trellis
+            - /usr/local/share/.cache/yarn/v1
+
+# TODO: Customize the workflow
+workflows:
+  version: 2
+  tiller:
+    jobs:
+      - deploy-production:
+          filters:
+            branches:
+              only: master
