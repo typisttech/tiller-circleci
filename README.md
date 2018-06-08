@@ -157,7 +157,7 @@ To use another vault password filename:
 -    command: echo $VAULT_PASS > .vault_pass
 +    command: echo $VAULT_PASS > .my_vault_password_file
     working_directory: trellis
-``
+```
 
 Using [Ansible Vault](https://docs.ansible.com/ansible/playbooks_vault.html) to encrypt sensitive data is strongly recommended. In case you have a very strong reason not to use Ansible Vault, remove the step:
 
