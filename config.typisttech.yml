@@ -13,7 +13,7 @@ jobs:
       TRELLIS_BRANCH: master
       TRELLIS_REPO: git@github.com:XXX/YYY.git
     steps:
-      - deploy:
+      - run:
           name: Clone Trellis Repo
           command: git clone --verbose --branch $TRELLIS_BRANCH --depth 1 $TRELLIS_REPO .
           working_directory: trellis
