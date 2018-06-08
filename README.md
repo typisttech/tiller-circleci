@@ -81,7 +81,7 @@ See: [roots/trellis#883 (comment)](https://github.com/roots/trellis/issues/883#i
 To install `config.typisttech.yml`:
 1. Set up SSH keys and commit Trellis changes described in the following sections
 1. Push the Trellis repo
-1. Copy, review, change and commit [`config.typisttech.yml`](./config.typisttech.yml) to Bedrock `.circleci/config.yml`
+1. Copy, review, change and commit [`config.typisttech.yml`](./config.typisttech.yml) to `<bedrock>/.circleci/config.yml`
 
 ---
 
@@ -98,7 +98,7 @@ You need a robot user for deployment. In this example, we will use a GitHub mach
 
 On CircleCI's web console:
 1. Link your project repo
-1. Go to **Settings** >> **Checkout SSH Keys**
+1. Go to **Settings** » **Checkout SSH Keys**
 1. Delete the deploy key
 1. Create a user key (as `mybot`)
 
@@ -130,6 +130,7 @@ Learn more about deploy keys and user keys on CircleCI **Checkout SSH Keys** set
 Normally, Trellis always deploy the **latest** commit of the branch. We need a change in `group_vars/<env>/wordpress_sites.yml`:
 
 ```diff
+# group_vars/<env>/wordpress_sites.yml
 wordpress_sites:
   example.com:
 -    branch: master
