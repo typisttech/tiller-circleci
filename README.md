@@ -172,7 +172,10 @@ Using [Ansible Vault](https://docs.ansible.com/ansible/playbooks_vault.html) to 
 
 ### Is it a must to merge Trellis pull request [#997](https://github.com/roots/trellis/pull/997)?
 
-Yes.
+Yes and no.
+
+It is required for compiling Sage assets.
+If you don't use Sage, you can omit it.
 
 ### What is in the `itinerisltd/tiller` docker image?
 
