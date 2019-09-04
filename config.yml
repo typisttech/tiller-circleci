@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+          key: v1-ansible-galaxy-{{ checksum "trellis/galaxy.yml" }}
       - restore_cache:
           keys:
             - v1-production-{{ .Branch }}-{{ .Revision }}-
@@ -25,13 +25,13 @@ jobs:
           working_directory: trellis
       - run:
           name: Install Ansible Galaxy Roles
-          command: ansible-galaxy install -r requirements.yml -vvvv
+          command: ansible-galaxy install -r galaxy.yml -vvvv
           working_directory: trellis
       - deploy:
           command: ansible-playbook deploy.yml -e env=$SITE_ENV -e site=$SITE_KEY -e site_version=$CIRCLE_SHA1 -vvvv
           working_directory: trellis
       - save_cache:
-          key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+          key: v1-ansible-galaxy-{{ checksum "trellis/galaxy.yml" }}
           paths:
             - trellis/vendor
       - save_cache:

@@ -213,10 +213,10 @@ Due to the way `$ ansible-galaxy install` works, you can't cache `trellis/vendor
 If you must install a role from its git/hg repo branch:
 ```diff
 -- restore_cache:
--    key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+-    key: v1-ansible-galaxy-{{ checksum "trellis/galaxy.yml" }}
  # ...
 -- save_cache:
--    key: v1-ansible-galaxy-{{ checksum "trellis/requirements.yml" }}
+-    key: v1-ansible-galaxy-{{ checksum "trellis/galaxy.yml" }}
 -    paths:
 -     - trellis/vendor
 ```
@@ -242,8 +242,8 @@ To disable verbose mode:
 ```diff
  - run:
      name: Install Ansible Galaxy Roles
--    command: ansible-galaxy install -r requirements.yml -vvvv
-+    command: ansible-galaxy install -r requirements.yml
+-    command: ansible-galaxy install -r galaxy.yml -vvvv
++    command: ansible-galaxy install -r galaxy.yml
     working_directory: trellis
  - deploy:
 -    command: ansible-playbook deploy.yml -e env=$SITE_ENV -e site=$SITE_KEY -e site_version=$CIRCLE_SHA1 -vvvv
