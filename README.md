@@ -1,3 +1,7 @@
+**[Deprecated] Use [ItinerisLtd/tiller-circleci-orb](https://github.com/ItinerisLtd/tiller-circleci-orb) instead.**
+
+---
+
 # Tiller CircleCI
 
 Deploy Trellis, Bedrock and Sage via CircleCI.
